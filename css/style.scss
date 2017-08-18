@@ -1,0 +1,21 @@
+//variable declaration in list form fot links only
+$a-tags: 'a, a:active, a:hover, a:visited, a:active, a:hover';
+
+body{
+  margin-top:20px;
+  background-color:#252525;
+  margin-bottom:2em;
+
+  .container-fluid{
+    margin-left: 5%;
+    margin-right: 5%;
+    #info{
+      margin-top: 30px;
+      color:white;
+      #{$a-tags} {
+        color: yellow;
+        text-decoration: none;
+      }
+    }
+  }
+}
