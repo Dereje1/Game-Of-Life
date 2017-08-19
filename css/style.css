@@ -9,6 +9,25 @@ body .container-fluid {
   margin-right: 5%;
 }
 
+body .container-fluid #elementHolder {
+  margin: 0 auto;
+  width: 500px;
+  height: 500px;
+  background-color: white;
+}
+
+body .container-fluid #elementHolder .Elemental {
+  margin: 0px;
+  padding: 0px;
+  background-color: white;
+  width: 50px;
+  height: 50px;
+  display: inline-block;
+  border-style: solid;
+  border-width: 1px;
+  vertical-align: top;
+}
+
 body .container-fluid #info {
   margin-top: 30px;
   color: white;
