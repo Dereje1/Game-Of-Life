@@ -2,11 +2,27 @@ class Main extends React.Component{
   constructor(props){
     super(props)
     this.state={
-      board:[]
+      board:[],
+      elapsedTime:0,
+      updateInterval:20
     }
+    this.boardstate=this.boardstate.bind(this)
   }
-
-  boardstate(cellData){
+  componentDidMount(){
+    console.log("Mounted")
+    this.intervalId = setInterval(this.testtimer.bind(this), this.state.updateInterval);
+  }
+  componentWillUnmount(){
+    clearInterval(this.intervalId);
+  }
+  testtimer(){
+    this.boardstate(0,simulator())
+    //console.log(this.state.elapsedTime)
+    this.setState({elapsedTime:(this.state.elapsedTime+=this.state.updateInterval)})
+    if(this.state.elapsedTime>20000){clearInterval(this.intervalId)}
+  }
+  boardstate(e,cellData){
+    //console.log(cellData)
     let x =this.state.board.slice();
     if (x.includes(cellData)){
       x.splice(x.indexOf(cellData),1)
@@ -15,15 +31,23 @@ class Main extends React.Component{
       x.push(cellData)
     }
     this.setState({ board:x})
+
   }
 
   elementbuilder(){
-    let x=[];
-    for (let i=0;i<10;i++){
-      for(let j=0;j<10;j++){
-          let idConstruct = i.toString()+j.toString();
-          x.push(
-            <Element elId={idConstruct} callBackToMain={(cellData)=>this.boardstate(cellData)}/>
+    let x=[],bcol;
+
+    for (let i=0;i<20;i++){
+      for(let j=0;j<20;j++){
+          let idConstruct = i.toString()+"_"+j.toString();
+          if(this.state.board.includes(idConstruct)){bcol="blue"}
+          else{bcol="white"}
+          x.push(   <div
+                     id={idConstruct}
+                     onClick={(e)=>this.boardstate(e,idConstruct)}
+                     className="Elemental"
+                     style={{background: bcol}}
+                     />
           )
       }
     }
@@ -34,78 +58,16 @@ class Main extends React.Component{
     return(
       <div id="elementHolder">
         {this.elementbuilder()}
+
       </div>
     )
   }
 }
 
-class Grids extends React.Component{
-  constructor(props){
-    super(props)
-    this.state={
-      actives:[],
-      bgColor:'white',
-      cname:"Element"
-    }
-    this.elementbuilder=this.elementbuilder.bind(this)
-    this.elementSelection=this.elementSelection.bind(this)
-  }
-  elementSelection(e){
-    let currentSelection = e.target.id;
-    let x =this.state.actives.slice();
-    if (x.includes(currentSelection)){
-      x.splice(x.indexOf(currentSelection),1)
-      this.setState({ bgColor:'white',
-                      cname: 'Element'
-      })
-    }
-    else{
-      x.push(currentSelection)
-      this.setState({ bgColor:'blue',
-                      cname: 'ElementColored'
-      })
-    }
-    this.setState({ actives:x})
-  }
-  render(){
-    return(
-      <div>
-        {this.elementbuilder()}
-      </div>
-    )
-  }
-}
-
-
-
-class Element extends React.Component{
-  constructor(props){
-    super(props)
-    this.state={
-      active: false,
-      bgcolor:function(){
-        if (this.active){return "blue"}
-        else{return "white"}
-      }
-    }
-    this.elementClicked=this.elementClicked.bind(this)
-  }
-  elementClicked(e){
-    this.props.callBackToMain(this.props.elId)
-    if (!this.state.active){
-      this.setState({active: true})
-    }
-    else{
-      this.setState({active: false})
-    }
-  }
-  render(){
-    return (<div
-            className="Elemental"
-            onClick={(e)=>this.elementClicked(e)}
-            style={{background: this.state.bgcolor()}}
-            />)
-  }
+function simulator(){
+  let y = Math.floor(Math.random() * 19) + 1
+  let x = Math.floor(Math.random() * 19) + 1
+  return(y.toString()+"_"+x.toString())
 }
 
 ReactDOM.render(
