@@ -1,5 +1,5 @@
 # Game-Of-Life
-<h3>Page Link: </h3>
+<h3>Page Link: https://dereje1.github.io/Game-Of-Life/</h3>
 <ul>
   <li>User Story: When I first arrive at the game, it will randomly generate a board and start playing.</li>
   <li>User Story: I can start and stop the board.</li>

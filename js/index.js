@@ -2,34 +2,37 @@ class Main extends React.Component{
   constructor(props){
     super(props)
     this.state={
-      alive:[],
-      elapsedTime:0,
-      generations:0,
-      updateInterval:50,
-      elementSize:20
+      alive:[],//array collects all live cell positions
+      generations:0,//generation counter
+      updateInterval:50,//set interval period
+      elementSize:20//grid elements per board
     }
-    this.manualStateChange=this.manualStateChange.bind(this)
+    //user click cell change
+    this.manualCellChange=this.manualCellChange.bind(this)
   }
   componentDidMount(){
-    console.log("Mounted")
+    //on mount set random cells
     this.setState({
         alive:simulator(this.state.elementSize)
       })
-    this.intervalId = setInterval(this.tick.bind(this), this.state.updateInterval);
+    //then start timer
+    this.play();
   }
   componentWillUnmount(){
-    clearInterval(this.intervalId);
+    //clear interval on unmount
+    this.pause();
   }
   tick(){
+    //callback function for set Interval, updates alive cells and total generations passed
     this.setState({
-        alive:conway(this.state.alive,this.state.elementSize),
-        elapsedTime:this.state.elapsedTime+=this.state.updateInterval,
+        alive:findLiveCells(this.state.alive,this.state.elementSize),
         generations:this.state.generations+1
       })
-    if(this.state.alive.length===0){clearInterval(this.intervalId)}
+    //kill timer if board is empty
+    if(this.state.alive.length===0){this.pause()}
   }
-  manualStateChange(e,cellData){
-    //console.log(cellData)
+  manualCellChange(e,cellData){
+    //use to turn on an off cells by user clicke
     let x =this.state.alive.slice();
     if (x.includes(cellData)){
       x.splice(x.indexOf(cellData),1)
@@ -38,20 +41,24 @@ class Main extends React.Component{
       x.push(cellData)
     }
     this.setState({ alive:x})
-
   }
 
   elementbuilder(){
+    //builds all cells
     let x=[],bcol;
+    //find element width
     let elementWidth = (500/this.state.elementSize).toString()+"px"
     for (let i=0;i<this.state.elementSize;i++){
       for(let j=0;j<this.state.elementSize;j++){
+          //construct id string cell coords
           let idConstruct = i.toString()+"_"+j.toString();
-          if(this.state.alive.includes(idConstruct)){bcol="#2f47fc"}
+          //set color of cell if alive
+          if(this.state.alive.includes(idConstruct)){bcol="#27bc20"}
           else{bcol="white"}
+          //construct jsx and push
           x.push(   <span
                      id={idConstruct}
-                     onClick={(e)=>this.manualStateChange(e,idConstruct)}
+                     onClick={(e)=>this.manualCellChange(e,idConstruct)}
                      className="Elemental"
                      style={{background: bcol,
                             width:elementWidth,
@@ -63,39 +70,38 @@ class Main extends React.Component{
     }
     return x;
   }
-  //Control Panel Actions below
-  reset(){
-    clearInterval(this.intervalId);
-    this.setState({
-        alive:simulator(this.state.elementSize),
-        elapsedTime:0,
-        generations:0
-      })
-    this.intervalId = setInterval(this.tick.bind(this), this.state.updateInterval);
-  }
+  //Control all Actions  sent from the panel below
   pause(){
     clearInterval(this.intervalId);
   }
   play(){
     this.intervalId = setInterval(this.tick.bind(this), this.state.updateInterval);
   }
+  reset(){
+    this.pause();
+    this.setState({
+        alive:simulator(this.state.elementSize),
+        generations:0
+      })
+    this.play();
+  }
   dump(){
-    clearInterval(this.intervalId);
+    this.pause();
     this.setState({
         alive:[],
-        elapsedTime:0,
         generations:0
       })
   }
   speed(e){
     this.pause();
+    //note callback to play on speedChange
     this.setState({updateInterval:parseInt(e,10)},this.play)
   }
   grid(e){
-    clearInterval(this.intervalId);
+    this.pause();
+    //note callback to play on grid change
     this.setState({
         alive:simulator(this.state.elementSize),
-        elapsedTime:0,
         generations:0,
         elementSize:parseInt(e,10)
       },this.play)
@@ -122,6 +128,7 @@ class Main extends React.Component{
 }
 
 class ControlPanel extends React.Component{
+  //stateless child class control panel sends settings back to parent
   constructor(props){
     super(props)
     this.speedChange=this.speedChange.bind(this)
@@ -134,6 +141,7 @@ class ControlPanel extends React.Component{
     this.props.onGrid(e)
   }
   playPause(){
+    //play pause button tool bar
     let ButtonGroup = ReactBootstrap.ButtonGroup ;
     let Button = ReactBootstrap.Button ;
     let OverlayTrigger = ReactBootstrap.OverlayTrigger ;
@@ -163,7 +171,7 @@ class ControlPanel extends React.Component{
     let Well = ReactBootstrap.Well ;
     return(
       <div id="ControlPanel">
-        <p className="cPanelHeader">Generations = {this.props.generations}</p>
+        <p className="cPanelHeader">{this.props.generations} Generations</p>
         <Well>
             {this.playPause()}
 
