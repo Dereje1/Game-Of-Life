@@ -60,11 +60,14 @@ function possibleNeighbours(cell,boxSize){
 
 function simulator(param){
   let newState=[]
-  let areaCovered = Math.floor(.9*param*param)
+  let areaCovered = param*param
   for (let i=0;i<areaCovered;i++){
     let y = Math.floor(Math.random() * param)
     let x = Math.floor(Math.random() * param)
-    newState.push(y.toString()+"_"+x.toString())
+    let stringCoords = y.toString()+"_"+x.toString()
+    if(!newState.includes(stringCoords)){
+      newState.push(stringCoords)
+    }
   }
  return newState;
 }

@@ -9,14 +9,33 @@ body .container-fluid {
   margin-right: 5%;
 }
 
-body .container-fluid #BoardInfo {
+body .container-fluid #ControlPanel {
   margin: 0 auto;
   width: 500px;
-  height: 100px;
   background-color: white;
   color: black;
   border-style: solid;
   border-width: 1px;
+}
+
+body .container-fluid #ControlPanel .dropdown {
+  margin-left: 40px;
+}
+
+body .container-fluid #ControlPanel .cPanelHeader {
+  margin-top: 5px;
+  text-align: center;
+  font-family: Merriweather, serif;
+  font-weight: bold;
+  font-size: 20px;
+}
+
+body .container-fluid #ControlPanel .cPanelSummary {
+  margin-top: 30px;
+  text-align: center;
+  font-family: Merriweather, serif;
+  font-weight: bold;
+  font-size: 20px;
 }
 
 body .container-fluid #elementHolder {
