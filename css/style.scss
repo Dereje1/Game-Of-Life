@@ -9,6 +9,15 @@ body{
   .container-fluid{
     margin-left: 5%;
     margin-right: 5%;
+    #BoardInfo{
+      margin: 0 auto;
+      width:500px;
+      height: 100px;
+      background-color: white;
+      color:black;
+      border-style: solid;
+      border-width: 1px;
+    }
     #elementHolder{
       margin: 0 auto;
       width:500px;
@@ -18,9 +27,8 @@ body{
       .Elemental{
         margin:0px;
         padding: 0px;
+        float: left;
         background-color: white;
-        width:25px;
-        height:25px;
         display: inline-block;
         border-style: solid;
         border-width: 1px;
