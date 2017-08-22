@@ -5,12 +5,10 @@ class Main extends React.Component{
       alive:[],//array collects all live cell positions
       generations:0,//generation counter
       updateInterval:1000,//set interval period
-      elementSize:20,//grid elements per board
-      request:false
+      elementSize:100//grid elements per board
     }
     //user click cell change
     this.manualCellChange=this.manualCellChange.bind(this)
-    this.tick=this.tick.bind(this)
   }
   componentDidMount(){
     //on mount set random cells
@@ -31,10 +29,8 @@ class Main extends React.Component{
         generations:this.state.generations+1
       })
     //kill timer if board is empty
-    if (this.state.request) {
-      if(this.state.alive.length!==0){requestAnimationFrame(this.tick)}
-    }
-}
+    if(this.state.alive.length===0){this.pause()}
+  }
   manualCellChange(e,cellData){
     //use to turn on an off cells by user clicke
     let x =this.state.alive.slice();
@@ -76,29 +72,24 @@ class Main extends React.Component{
   }
   //Control all Actions  sent from the panel below
   pause(){
-    cancelAnimationFrame(this.intervalId);
+    clearInterval(this.intervalId);
   }
   play(){
-    this.setState({
-        alive:[],
-        generations:0,
-        request: true
-      },)
-    this.intervalId = requestAnimationFrame(this.tick);
+    this.intervalId = setInterval(this.tick.bind(this), this.state.updateInterval);
   }
   reset(){
     this.pause();
     this.setState({
         alive:simulator(this.state.elementSize),
         generations:0
-      },this.play())
+      })
+    this.play();
   }
   dump(){
     this.pause();
     this.setState({
         alive:[],
-        generations:0,
-        request: false
+        generations:0
       })
   }
   speed(e){
@@ -184,7 +175,7 @@ class ControlPanel extends React.Component{
         <Well>
             {this.playPause()}
 
-          <SplitButton disabled="true" bsStyle="primary" title="Speed" dropdown pullLeft id="split-button-dropdown-pull-right" onSelect={this.speedChange}>
+          <SplitButton bsStyle="primary" title="Speed" dropdown pullLeft id="split-button-dropdown-pull-right" onSelect={this.speedChange}>
               <MenuItem eventKey="50">50 ms</MenuItem>
               <MenuItem eventKey="100">100 ms</MenuItem>
               <MenuItem eventKey="200">200 ms</MenuItem>
@@ -193,9 +184,10 @@ class ControlPanel extends React.Component{
               <MenuItem eventKey="10">10 X 10</MenuItem>
               <MenuItem eventKey="20">20 X 20</MenuItem>
               <MenuItem eventKey="50">50 X 50</MenuItem>
-              <MenuItem eventKey="100">100 X 100</MenuItem>
+              <MenuItem eventKey="60">60 X 60</MenuItem>
           </SplitButton>
-          <p className="cPanelSummary">{"Update Speed = " + " Grid = " +
+          <p className="cPanelSummary">{"Update Speed = " +
+              this.props.speed + "ms, Grid = " +
               this.props.grid + " X " + this.props.grid
               }
           </p>
