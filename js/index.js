@@ -5,7 +5,7 @@ class Main extends React.Component{
       alive:[],//array collects all live cell positions
       generations:0,//generation counter
       updateInterval:1000,//set interval period
-      elementSize:20,//grid elements per board
+      elementSize:100,//grid elements per board
       request:false
     }
     //user click cell change
@@ -23,6 +23,10 @@ class Main extends React.Component{
   componentWillUnmount(){
     //clear interval on unmount
     this.pause();
+  }
+  shouldComponentUpdate(nextProps, nextState){
+    //if(this.state.elementSize!=nextState.elementSize){return true;}
+    return true;
   }
   tick(){
     //callback function for set Interval, updates alive cells and total generations passed
@@ -60,7 +64,7 @@ class Main extends React.Component{
           if(this.state.alive.includes(idConstruct)){bcol="#27bc20"}
           else{bcol="white"}
           //construct jsx and push
-          x.push(   <span
+          x.push(   <Cell
                      id={idConstruct}
                      onClick={(e)=>this.manualCellChange(e,idConstruct)}
                      className="Elemental"
@@ -135,7 +139,25 @@ class Main extends React.Component{
     )
   }
 }
-
+class Cell extends React.Component{
+  //creates a stateless Cell
+  constructor(props){
+    super(props)
+  }
+  shouldComponentUpdate(nextProps){
+    return true;
+  }
+  render(){
+    return(
+            <span
+                 id={this.props.id}
+                 onClick={(e)=>this.props.onClick(e,this.props.id)}
+                 className={this.props.className}
+                 style={this.props.style}
+                 />
+    )
+  }
+}
 class ControlPanel extends React.Component{
   //stateless child class control panel sends settings back to parent
   constructor(props){
