@@ -5,7 +5,8 @@ class Main extends React.Component{
       alive:[],//array collects all live cell positions
       generations:0,//generation counter
       updateInterval:50,//set interval period
-      elementSize:20//grid elements per board
+      elementSize:20,//grid elements per board
+      paused:false
     }
     //user click cell change
     this.manualCellChange=this.manualCellChange.bind(this)
@@ -73,9 +74,11 @@ class Main extends React.Component{
   //Control all Actions  sent from the panel below
   pause(){
     clearInterval(this.intervalId);
+    this.setState({paused:true})
   }
   play(){
     this.intervalId = setInterval(this.tick.bind(this), this.state.updateInterval);
+    this.setState({paused:false})
   }
   reset(){
     this.pause();
@@ -113,6 +116,7 @@ class Main extends React.Component{
           generations={this.state.generations}
           speed = {this.state.updateInterval}
           grid = {this.state.elementSize}
+          playState = {this.state.paused}
           onReset = {()=>this.reset()}
           onPause = {()=>this.pause()}
           onPlay = {()=>this.play()}
@@ -146,13 +150,19 @@ class ControlPanel extends React.Component{
     let Button = ReactBootstrap.Button ;
     let OverlayTrigger = ReactBootstrap.OverlayTrigger ;
     let Tooltip = ReactBootstrap.Tooltip ;
+    let playPauseButton;
+    if(!this.props.playState){
+      playPauseButton = (<Button onClick={this.props.onPause}><i className="fa fa-pause" aria-hidden="true"></i></Button>)
+    }
+    else{
+      playPauseButton = (<Button onClick={this.props.onPlay}><i className="fa fa-play" aria-hidden="true"></i></Button>)
+    }
     const tooltip1 = (<Tooltip id="tooltip"><strong>Reset Random Board</strong></Tooltip>);
     const tooltip2 = (<Tooltip id="tooltip"><strong>Clear Board</strong></Tooltip>);
     const tooltip3 = (<Tooltip id="tooltip"><strong>Learn More</strong></Tooltip>);
     return(
       <ButtonGroup>
-        <Button onClick={this.props.onPlay}><i className="fa fa-play" aria-hidden="true"></i></Button>
-        <Button onClick={this.props.onPause}><i className="fa fa-pause" aria-hidden="true"></i></Button>
+        {playPauseButton}
         <OverlayTrigger placement="top" overlay={tooltip1}>
           <Button onClick={this.props.onReset}><i className="fa fa-refresh" aria-hidden="true"></i></Button>
         </OverlayTrigger>
