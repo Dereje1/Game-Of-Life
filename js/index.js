@@ -123,7 +123,7 @@ class Main extends React.Component{
           onDump = {()=>this.dump()}
           onSpeed = {(e)=>this.speed(e)}
           onGrid = {(e)=>this.grid(e)}
-          onRead = {()=>window.open('http://web.stanford.edu/~cdebs/GameOfLife/')}
+          onRead = {()=>window.open('https://cs.stanford.edu/people/eroberts/courses/soco/projects/2008-09/modeling-natural-systems/gameOfLife.html')}
         />
         <div id="elementHolder">{this.elementbuilder()}</div>
       </div>
